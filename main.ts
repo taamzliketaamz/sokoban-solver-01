@@ -1,1 +1,12 @@
-import*as F from'node:fs';const I='/input/',O='/output/',J=(a,x)=>a.includes(x);let w,W,D,A,n,L,q;const R=(b,f,z)=>{A=[];q=[f];A[f]='';for(const p of q)for(let k=0;k<4;k++)W[n=p+D[k]]||(n/w|0)==z||J(b,n)||n in A||(A[n]=A[p]+'udlr'[k],q.push(n));return q};const V=t=>{w=t.indexOf('\n')+1;D=[-w,w,-1,1];const G=[],B=[];W=[];let p;[...t].forEach((c,i)=>{W[i]=J('#\n',c);J('.*+',c)&&G.push(i);J('$*',c)&&B.push(i);J('@+',c)?p=i:0});L=[];q=[...G];for(const x of q)for(const d of D)L[x]=1,W[n=x-d]||W[n-d]||L[n]||(L[n]=q.push(n));const y=p/w|0,v=W;let r=B,m='',u=p,g=[];while(r.length){W=v;R([],r[0],y);const f=a=>a.filter(x=>x in A),o=f(B),e=f(G);let h;for(let q=y*w+w;q-->y*w;)if(q-w in A||q+w in A)h=q;const s=W.map((v,i)=>!(i in A)&&i!=h);R([...r,...g],u);m+=A[h];W=s;u=h;if(o+''!=e){u=-1;const ix={},Q=[[o,h,'']];Z:for(const[c,P,j]of Q){R(c,P);const a=A;for(const b of c)for(let k=0;k<4;k++){const d=D[k],t=b+d;if((b-d in a)&&!W[t]&&!J(c,t)&&L[t]){const nx=c.map(x=>x==b?t:x);nx.sort((a,b)=>a-b);const nm=j+a[b-d]+'UDLR'[k];if(nx+''==e){m+=nm;u=b;break Z}const ky=Math.min(...R(nx,b))+'|'+nx;ix[ky]||(ix[ky]=1,Q.push([nx,b,nm]))}}}if(u<0)return''}r=r.filter(b=>!J(o,b));g.push(...e)}return m};F.readdirSync(I).forEach(id=>{F.mkdirSync(O+id,{recursive:1});F.writeFileSync(O+id+'/solution.txt',V(''+F.readFileSync(I+id+'/level.txt'))+'\n')});
+import*as F from"node:fs";const I="/input/",O="/output/",J=(a,x)=>a.includes(x);let w,E,T,P,M,H,r,q,x,y,k;
+for(let d of F.readdirSync(I)){F.mkdirSync(O+d,{recursive:1});let s=""+F.readFileSync(I+d+"/level.txt");w=s.indexOf("\n")+1;E=[-w,w,-1,1];T="udlr";let Z=[[[],[]],[[],[]],[[],[]],[[],[]]],U=[],L=[],live={},out="",A=i=>s[i]!="#"&&s[i]!="\n",D=i=>((i/w|0)>8?2:0)+((i%w-1)/7|0),V=(p,b)=>{r={[p]:""};q=[p];M=p;for(let c of q)for(k=0;k<4;k++)y=c+E[k],A(y)&&!J(b,y)&&!J(H,y)&&!(y in r)&&(r[y]=r[c]+T[k],q.push(y),M=y<M?y:M);return r};P=0;H=[];
+for(let i=0;s[i];i++){let c=s[i],z=D(i);(c=="$"|c=="*")&&(Z[z][0].push(i),U.push(i));(c=="."|c=="*"|c=="+")&&(Z[z][1].push(i),L.push(i),live[i]=1);J("@+",c)&&(P=i)}
+for(x of L)for(k=0;k<4;k++)y=x-E[k],A(y)&&A(y-E[k])&&!live[y]&&(live[y]=1,L.push(y));
+for(let[bs,gs]of Z)if(bs.length){H=U.filter(x=>!J(bs,x));U=H.concat(gs);let seen={},Q=[[bs,P,""]],mv="",np=P,b,p,m;
+W:for(let t of Q){[b,p,m]=t;r=V(p,b);x=M+"|"+[...b].sort((a,b)=>a-b);if(seen[x])continue;seen[x]=1;
+for(let bi=0;bi<b.length;bi++)for(k=0;k<4;k++){let st=b[bi]-E[k],ds=b[bi]+E[k];
+if(st in r&&live[ds]&&!J(b,ds)){let nb=b.slice();nb[bi]=ds;let nm=m+r[st]+T[k];
+if(nb.every(x=>J(gs,x))){mv=nm;np=b[bi];break W}
+Q.push([nb,b[bi],nm])}}}
+out+=mv;P=np}
+F.writeFileSync(O+d+"/solution.txt",out)}
